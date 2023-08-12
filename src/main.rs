@@ -5,9 +5,12 @@ use image::DynamicImage;
 use image::GenericImageView;
 use image::ImageBuffer;
 use image::Rgba;
+use imageproc::drawing::{draw_text_mut, text_size};
+use rand::Rng;
+use rusttype::{Font, Scale};
 
 fn main() {
-    let icon = image::open("watermark.png").expect("open icon image");
+    let icon = image::open("icon.png").expect("open icon image");
 
     let files = fs::read_dir("in").expect("read dir").flatten();
 
@@ -25,8 +28,89 @@ fn main() {
 
         let padded = add_padding(squared);
 
-        padded.save(format!("out/{filename}")).expect("save image");
+        let watermarked = add_watermark(padded);
+
+        watermarked
+            .save(format!("out/{filename}"))
+            .expect("save image");
     }
+}
+
+const WATERMARK: &str = "@garfieldeo@mastodon.world";
+
+fn add_watermark(image: DynamicImage) -> DynamicImage {
+    let mut image = image.to_rgba8();
+
+    let text = WATERMARK;
+
+    let (width, height) = image.dimensions();
+
+    let font = Vec::from(include_bytes!("../font.ttf") as &[u8]);
+    let font = Font::try_from_vec(font).unwrap();
+
+    let mut rng = rand::thread_rng();
+
+    // Get random text size
+    let text_height = width.max(height) as f32 * rng.gen_range(0.03..=0.04);
+    // Offset for stroke drawing
+    let offset = (text_height * 0.09) as i32;
+
+    let scale = Scale {
+        // Distort (squish) to make shorter/longer
+        x: text_height * rng.gen_range(0.7..=1.1),
+        y: text_height,
+    };
+
+    // Edges of icon
+    let edges = if width != height {
+        // 3-panel
+        (0.52, 0.99, 0.51, 0.99)
+    } else {
+        // Sunday
+        (0.01, 0.99, 0.71, 0.99)
+    };
+
+    // Relative to image size
+    let (w, h) = text_size(scale, &font, text);
+    let min_x = (width as f32 * edges.0) as i32;
+    let max_x = (width as f32 * edges.1) as i32 - w;
+    let min_y = (height as f32 * edges.2) as i32;
+    let max_y = (height as f32 * edges.3) as i32 - h;
+    // Prevent inverted ranges
+    let max_x = min_x.max(max_x);
+    let max_y = min_y.max(max_y);
+
+    // Get random position
+    let x = rng.gen_range(min_x..=max_x);
+    let y = rng.gen_range(min_y..=max_y);
+
+    let directions = [
+        // Diagonals
+        (-1, -1),
+        (1, -1),
+        (-1, 1),
+        (1, 1),
+        // Cardinals
+        (0, -1),
+        (-1, 0),
+        (1, 0),
+        (0, 1),
+    ];
+    for (dir_x, dir_y) in directions {
+        draw_text_mut(
+            &mut image,
+            BLACK,
+            x + offset * dir_x,
+            y + offset * dir_y,
+            scale,
+            &font,
+            text,
+        );
+    }
+
+    draw_text_mut(&mut image, WHITE, x, y, scale, &font, text);
+
+    DynamicImage::ImageRgba8(image)
 }
 
 fn add_padding(image: DynamicImage) -> DynamicImage {
@@ -44,6 +128,7 @@ fn add_padding(image: DynamicImage) -> DynamicImage {
 }
 
 const WHITE: Rgba<u8> = Rgba([255, 255, 255, 255]);
+const BLACK: Rgba<u8> = Rgba([0, 0, 0, 255]);
 
 const RESIZE_FILTER: imageops::FilterType = imageops::FilterType::Gaussian;
 
