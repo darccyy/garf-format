@@ -12,7 +12,12 @@ use rusttype::{Font, Scale};
 fn main() {
     let icon = image::open("icon.png").expect("open icon image");
 
-    let files = fs::read_dir("in").expect("read dir").flatten();
+    let mut files: Vec<_> = fs::read_dir("in").expect("read dir").flatten().collect();
+    files.sort_by_key(|file| {
+        let filename = file.file_name();
+        let filename = filename.to_string_lossy().to_string();
+        filename
+    });
 
     for file in files {
         let filename = file.file_name();
