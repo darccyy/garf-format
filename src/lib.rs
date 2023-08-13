@@ -5,6 +5,14 @@ use imageproc::drawing::{draw_text_mut, text_size};
 use rand::Rng;
 use rusttype::{Font, Scale};
 
+pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str) -> DynamicImage {
+    let image = remove_padding(image);
+    let image = make_square(image, &icon);
+    let image = add_padding(image);
+    let image = add_watermark(image, watermark);
+    image
+}
+
 const MAX_SUNDAY_ASPECT_RATIO: f32 = 2.0;
 const MIN_WHITE_THRESHOLD: u8 = 100;
 
