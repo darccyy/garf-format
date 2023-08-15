@@ -10,6 +10,7 @@ pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str) 
     let image = make_square(image, &icon);
     let image = add_padding(image);
     let image = add_watermark(image, watermark);
+    let image = resize_image(image);
     image
 }
 
@@ -32,6 +33,8 @@ const TEXT_WIDTH_SCALE: RangeInclusive<f32> = 0.6..=1.1;
 const TEXT_STROKE_WEIGHT: f32 = 0.09;
 const EDGES_NORMAL: [f32; 4] = [0.52, 0.99, 0.51, 0.99];
 const EDGES_SUNDAY: [f32; 4] = [0.01, 0.99, 0.71, 0.99];
+
+const FINAL_WIDTH: u32 = 1000;
 
 pub fn remove_padding(mut image: DynamicImage) -> DynamicImage {
     let (width, height) = image.dimensions();
@@ -204,4 +207,12 @@ fn is_white_enough(pixel: Rgba<u8>) -> bool {
     }
 
     r >= MIN_WHITE_THRESHOLD && g >= MIN_WHITE_THRESHOLD && b >= MIN_WHITE_THRESHOLD
+}
+
+fn resize_image(image: DynamicImage) -> DynamicImage {
+    let (width, height) = image.dimensions();
+    let ratio = width as f32 / height as f32;
+    let final_height = (ratio * FINAL_WIDTH as f32) as u32;
+
+    image.resize(FINAL_WIDTH, final_height, RESIZE_FILTER)
 }
