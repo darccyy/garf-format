@@ -23,10 +23,12 @@ const POS_HEIGHT_AMOUNT: f32 = 2.03;
 const POS_ICON_X: f32 = 0.515;
 const POS_ICON_Y: f32 = 0.505;
 
+/// Very slow! But who cares!
+const RESIZE_FILTER: imageops::FilterType = imageops::FilterType::Lanczos3;
+
 const PADDING_AMOUNT: f32 = 0.009;
 const WHITE: Rgba<u8> = Rgba([255, 255, 255, 255]);
 const BLACK: Rgba<u8> = Rgba([0, 0, 0, 255]);
-const RESIZE_FILTER: imageops::FilterType = imageops::FilterType::Gaussian;
 
 const TEXT_SIZE: RangeInclusive<f32> = 0.03..=0.04;
 const TEXT_WIDTH_SCALE: RangeInclusive<f32> = 0.6..=1.1;
