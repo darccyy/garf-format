@@ -8,7 +8,7 @@ use garf_convert::convert_image;
 
 fn main() {
     // Default stuff
-    const WATERMARK: &str = "@garfieldeo@mastodon.world";
+    const WATERMARK: &str = "Garfield Esperanto";
     let icon = image::load_from_memory(include_bytes!("../icon.png")).expect("open icon image");
 
     // Get input and output files/directories from arguments
