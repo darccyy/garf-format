@@ -8,7 +8,6 @@ use garf_convert::convert_image;
 
 fn main() {
     // Default stuff
-    const WATERMARK: &str = "Garfield Esperanto";
     let icon = image::load_from_memory(include_bytes!("../icon.png")).expect("open icon image");
 
     // Get input and output files/directories from arguments
@@ -23,7 +22,7 @@ fn main() {
 
     // Convert single file, if input is file
     if Path::new(input).is_file() {
-        convert_and_save(input, output, &icon, WATERMARK);
+        convert_and_save(input, output, &icon);
         return;
     }
 
@@ -52,15 +51,14 @@ fn main() {
             &file.path().to_string_lossy(),
             &format!("{output}/{filename}"),
             &icon,
-            WATERMARK,
         );
     }
 }
 
 /// Read an image, convert to output, and write
-fn convert_and_save(input: &str, output: &str, icon: &image::DynamicImage, watermark: &str) {
+fn convert_and_save(input: &str, output: &str, icon: &image::DynamicImage) {
     println!("{input} -> {output}");
     let image_in = image::open(input).expect("open image");
-    let image_out = convert_image(image_in, icon, watermark);
+    let image_out = convert_image(image_in, icon);
     image_out.save(output).expect("save image");
 }

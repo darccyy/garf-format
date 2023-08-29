@@ -5,15 +5,8 @@ use imageproc::drawing::{draw_text_mut, text_size};
 use rand::Rng;
 use rusttype::{Font, Scale};
 
-pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str) -> DynamicImage {
-    let image = remove_padding(image);
-    let image = make_square(image, &icon);
-    let image = add_padding(image);
-    let image = add_watermark(image, watermark);
-    let image = resize_image(image);
-    image
-}
-
+/// Watermark text to add to image
+const WATERMARK: &str = "Garfield Esperanto";
 /// Maximum aspect ration (w/h) an image can be to be treated as a sunday comic
 const MAX_SUNDAY_ASPECT_RATIO: f32 = 2.0;
 /// Minimum value of a color to be considered white.
@@ -55,7 +48,18 @@ const EDGES_SUNDAY: [f32; 4] = [0.01, 0.99, 0.71, 0.99];
 /// Height based on this too
 const FINAL_WIDTH: u32 = 1200;
 
-pub fn remove_padding(mut image: DynamicImage) -> DynamicImage {
+/// Conver image, including all operations
+pub fn convert_image(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
+    let image = remove_padding(image);
+    let image = make_square(image, &icon);
+    let image = add_padding(image);
+    let image = add_watermark(image, WATERMARK);
+    let image = resize_image(image);
+    image
+}
+
+/// Remove initial white padding from image
+fn remove_padding(mut image: DynamicImage) -> DynamicImage {
     let (width, height) = image.dimensions();
 
     let (mut min_x, mut min_y, mut max_x, mut max_y) = (width, height, 0, 0);
@@ -80,7 +84,11 @@ pub fn remove_padding(mut image: DynamicImage) -> DynamicImage {
     }
 }
 
-pub fn make_square(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
+/// Make comic fit in square image.
+///
+///  - Sunday does not change, just watermark added at bottom to make square.
+///  - Non-Sunday wraps 3rd panel below, to make 2x2 grid, watermark is added in last square.
+fn make_square(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
     let (width, height) = image.dimensions();
 
     let ratio = width as f32 / height as f32;
@@ -135,7 +143,8 @@ pub fn make_square(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
     DynamicImage::ImageRgba8(square)
 }
 
-pub fn add_padding(image: DynamicImage) -> DynamicImage {
+/// Add extra white padding to image
+fn add_padding(image: DynamicImage) -> DynamicImage {
     let (width, height) = image.dimensions();
 
     let padding = (width.min(height) as f32 * PADDING_AMOUNT) as u32;
@@ -147,7 +156,8 @@ pub fn add_padding(image: DynamicImage) -> DynamicImage {
     DynamicImage::ImageRgba8(padded)
 }
 
-pub fn add_watermark(image: DynamicImage, text: &str) -> DynamicImage {
+/// Add watermark text to image
+fn add_watermark(image: DynamicImage, text: &str) -> DynamicImage {
     let mut image = image.to_rgba8();
 
     let (width, height) = image.dimensions();
@@ -218,16 +228,16 @@ pub fn add_watermark(image: DynamicImage, text: &str) -> DynamicImage {
     DynamicImage::ImageRgba8(image)
 }
 
+/// Returns if pixel value is considered white enough (MIN_WHITE_THRESHOLD)
 fn is_white_enough(pixel: Rgba<u8>) -> bool {
     let Rgba([r, g, b, a]) = pixel;
-
     if a < 255 {
         return true;
     }
-
     r >= MIN_WHITE_THRESHOLD && g >= MIN_WHITE_THRESHOLD && b >= MIN_WHITE_THRESHOLD
 }
 
+/// Resize image to make width equal final width, without changing aspect ratio
 fn resize_image(image: DynamicImage) -> DynamicImage {
     let (width, height) = image.dimensions();
     let ratio = width as f32 / height as f32;
