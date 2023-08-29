@@ -24,6 +24,7 @@ const POS_ICON_X: f32 = 0.515;
 const POS_ICON_Y: f32 = 0.505;
 
 /// Very slow! But who cares!
+/// This filter should make the image look best
 const RESIZE_FILTER: imageops::FilterType = imageops::FilterType::Lanczos3;
 
 const PADDING_AMOUNT: f32 = 0.009;
@@ -36,7 +37,7 @@ const TEXT_STROKE_WEIGHT: f32 = 0.09;
 const EDGES_NORMAL: [f32; 4] = [0.52, 0.99, 0.51, 0.99];
 const EDGES_SUNDAY: [f32; 4] = [0.01, 0.99, 0.71, 0.99];
 
-const FINAL_WIDTH: u32 = 1000;
+const FINAL_WIDTH: u32 = 1200;
 
 pub fn remove_padding(mut image: DynamicImage) -> DynamicImage {
     let (width, height) = image.dimensions();
