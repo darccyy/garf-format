@@ -14,29 +14,45 @@ pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str) 
     image
 }
 
+/// Maximum aspect ration (w/h) an image can be to be treated as a sunday comic
 const MAX_SUNDAY_ASPECT_RATIO: f32 = 2.0;
+/// Minimum value of a color to be considered white.
+/// Used to crop initial padding, which can be any amount
 const MIN_WHITE_THRESHOLD: u8 = 100;
-
+/// Relative x-position for end of second panel (left of 2/3 divider) in non-Sunday comic.
 const POS_TWOTHIRD_LEFT_AMOUNT: f32 = 0.655;
+/// Relative x-position for start of third panel (right of 2/3 divider) in non-Sunday comic.
 const POS_TWOTHIRD_RIGHT_AMOUNT: f32 = 0.666;
+/// How much to increase the height of a non-Sunday comic, to make square
 const POS_HEIGHT_AMOUNT: f32 = 2.03;
+/// Relative x-position of watermark icon
 const POS_ICON_X: f32 = 0.515;
+/// Relative y-position of watermark icon
 const POS_ICON_Y: f32 = 0.505;
-
+/// Which resizing filter to use when scaling image.
 /// Very slow! But who cares!
 /// This filter should make the image look best
 const RESIZE_FILTER: imageops::FilterType = imageops::FilterType::Lanczos3;
-
+/// Relative amount of extra white to add
 const PADDING_AMOUNT: f32 = 0.009;
+/// White color for text and padding
 const WHITE: Rgba<u8> = Rgba([255, 255, 255, 255]);
+/// Black color for text
 const BLACK: Rgba<u8> = Rgba([0, 0, 0, 255]);
-
+/// Relative size of text, randomly-selected from range
 const TEXT_SIZE: RangeInclusive<f32> = 0.03..=0.04;
+/// Relative horizontal scale of text, randomly-selected from range
 const TEXT_WIDTH_SCALE: RangeInclusive<f32> = 0.6..=1.1;
+/// Relative width for text stroke
 const TEXT_STROKE_WEIGHT: f32 = 0.09;
+/// Relative positions for watermark icon bounds, for non-Sunday comic.
+/// [LEFT, RIGHT, TOP, BOTTOM]
 const EDGES_NORMAL: [f32; 4] = [0.52, 0.99, 0.51, 0.99];
+/// Relative positions for watermark icon bounds, for Sunday comic.
+/// [LEFT, RIGHT, TOP, BOTTOM]
 const EDGES_SUNDAY: [f32; 4] = [0.01, 0.99, 0.71, 0.99];
-
+/// Final width of image.
+/// Height based on this too
 const FINAL_WIDTH: u32 = 1200;
 
 pub fn remove_padding(mut image: DynamicImage) -> DynamicImage {
