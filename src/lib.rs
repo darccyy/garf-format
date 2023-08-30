@@ -53,8 +53,8 @@ pub fn convert_image(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
     let image = remove_padding(image);
     let image = make_square(image, &icon);
     let image = add_padding(image);
-    let image = add_watermark(image, WATERMARK);
     let image = resize_image(image);
+    let image = add_watermark(image, WATERMARK);
     image
 }
 
