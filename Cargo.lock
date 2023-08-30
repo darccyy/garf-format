@@ -183,6 +183,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 
 [[package]]
+name = "comic-format"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "image",
+ "imageproc",
+ "rand 0.8.5",
+ "rusttype",
+]
+
+[[package]]
 name = "conv"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -341,17 +352,6 @@ name = "futures-sink"
 version = "0.3.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f43be4fe21a13b9781a69afa4985b0f6ee0e1afab2c6f454a8cf30e2b2237b6e"
-
-[[package]]
-name = "garf-convert"
-version = "0.1.0"
-dependencies = [
- "clap",
- "image",
- "imageproc",
- "rand 0.8.5",
- "rusttype",
-]
 
 [[package]]
 name = "getrandom"

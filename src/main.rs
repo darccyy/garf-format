@@ -4,7 +4,7 @@ use clap::Parser;
 use std::{fs, path::Path};
 
 use args::Args;
-use garf_convert::convert_image;
+use comic_format::convert_image;
 
 fn main() {
     // Default stuff
