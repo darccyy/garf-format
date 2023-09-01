@@ -5,8 +5,6 @@ use imageproc::drawing::{draw_text_mut, text_size};
 use rand::Rng;
 use rusttype::{Font, Scale};
 
-/// Watermark text to add to image
-const WATERMARK: &str = "Garfield Esperanto";
 /// Maximum aspect ration (w/h) an image can be to be treated as a sunday comic
 const MAX_SUNDAY_ASPECT_RATIO: f32 = 2.0;
 /// Minimum value of a color to be considered white.
@@ -49,12 +47,12 @@ const EDGES_SUNDAY: [f32; 4] = [0.01, 0.99, 0.71, 0.99];
 const FINAL_WIDTH: u32 = 1200;
 
 /// Conver image, including all operations
-pub fn convert_image(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
+pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str) -> DynamicImage {
     let image = remove_padding(image);
     let image = make_square(image, &icon);
     let image = add_padding(image);
     let image = resize_image(image);
-    let image = add_watermark(image, WATERMARK);
+    let image = add_watermark(image, watermark);
     image
 }
 

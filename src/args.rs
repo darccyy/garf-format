@@ -8,6 +8,9 @@ pub struct Args {
     /// Output file or directory
     pub output: String,
 
+    /// Watermark text to add to image
+    pub watermark: String,
+
     /// Whether to sort names of files before converting
     #[arg(short, long)]
     pub sort_name: bool,
