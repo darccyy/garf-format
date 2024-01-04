@@ -47,9 +47,9 @@ const EDGES_SUNDAY: [f32; 4] = [0.01, 0.99, 0.71, 0.99];
 const FINAL_WIDTH: u32 = 1200;
 
 /// Conver image, including all operations
-pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str) -> DynamicImage {
+pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str, twothirds_adjust: f32) -> DynamicImage {
     let image = remove_padding(image);
-    let image = make_square(image, &icon);
+    let image = make_square(image, &icon, twothirds_adjust);
     let image = add_padding(image);
     let image = resize_image(image);
     let image = add_watermark(image, watermark);
@@ -86,7 +86,7 @@ fn remove_padding(mut image: DynamicImage) -> DynamicImage {
 ///
 ///  - Sunday does not change, just watermark added at bottom to make square.
 ///  - Non-Sunday wraps 3rd panel below, to make 2x2 grid, watermark is added in last square.
-fn make_square(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
+fn make_square(image: DynamicImage, icon: &DynamicImage, twothirds_adjust: f32) -> DynamicImage {
     let (width, height) = image.dimensions();
 
     let ratio = width as f32 / height as f32;
@@ -108,8 +108,8 @@ fn make_square(image: DynamicImage, icon: &DynamicImage) -> DynamicImage {
 
         square
     } else {
-        let twothirds_left = (width as f32 * POS_TWOTHIRD_LEFT_AMOUNT) as u32;
-        let twothirds_right = (width as f32 * POS_TWOTHIRD_RIGHT_AMOUNT) as u32;
+        let twothirds_left = (width as f32 * POS_TWOTHIRD_LEFT_AMOUNT + twothirds_adjust / 100.0) as u32;
+        let twothirds_right = (width as f32 * POS_TWOTHIRD_RIGHT_AMOUNT + twothirds_adjust / 100.0) as u32;
 
         let square_width = twothirds_left;
         let square_height = (height as f32 * POS_HEIGHT_AMOUNT) as u32;

@@ -22,7 +22,7 @@ fn main() {
 
     // Convert single file, if input is file
     if Path::new(input).is_file() {
-        convert_and_save(input, output, &icon, &args.watermark);
+        convert_and_save(input, output, &icon, &args.watermark, args.twothirds_adjust);
         return;
     }
 
@@ -52,14 +52,21 @@ fn main() {
             &format!("{output}/{filename}"),
             &icon,
             &args.watermark,
+            args.twothirds_adjust,
         );
     }
 }
 
 /// Read an image, convert to output, and write
-fn convert_and_save(input: &str, output: &str, icon: &image::DynamicImage, watermark: &str) {
+fn convert_and_save(
+    input: &str,
+    output: &str,
+    icon: &image::DynamicImage,
+    watermark: &str,
+    twothirds_adjust: f32,
+) {
     println!("{input} -> {output}");
     let image_in = image::open(input).expect("open image");
-    let image_out = convert_image(image_in, icon, watermark);
+    let image_out = convert_image(image_in, icon, watermark, twothirds_adjust);
     image_out.save(output).expect("save image");
 }

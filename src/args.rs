@@ -14,5 +14,9 @@ pub struct Args {
     /// Whether to sort names of files before converting
     #[arg(short, long)]
     pub sort_name: bool,
+
+    /// Adjust x-position of 2/3rds cutoff, as percent of comic width
+    #[arg(short, long)]
+    pub twothirds_adjust: f32,
 }
 
