@@ -47,7 +47,12 @@ const EDGES_SUNDAY: [f32; 4] = [0.01, 0.99, 0.71, 0.99];
 const FINAL_WIDTH: u32 = 1200;
 
 /// Conver image, including all operations
-pub fn convert_image(image: DynamicImage, icon: &DynamicImage, watermark: &str, twothirds_adjust: f32) -> DynamicImage {
+pub fn convert_image(
+    image: DynamicImage,
+    icon: &DynamicImage,
+    watermark: &str,
+    twothirds_adjust: f32,
+) -> DynamicImage {
     let image = remove_padding(image);
     let image = make_square(image, &icon, twothirds_adjust);
     let image = add_padding(image);
@@ -108,8 +113,9 @@ fn make_square(image: DynamicImage, icon: &DynamicImage, twothirds_adjust: f32) 
 
         square
     } else {
-        let twothirds_left = (width as f32 * POS_TWOTHIRD_LEFT_AMOUNT + twothirds_adjust / 100.0) as u32;
-        let twothirds_right = (width as f32 * POS_TWOTHIRD_RIGHT_AMOUNT + twothirds_adjust / 100.0) as u32;
+        let twothirds_left =
+            (width as f32 * (POS_TWOTHIRD_LEFT_AMOUNT + twothirds_adjust / 100.0)) as u32;
+        let twothirds_right = (width as f32 * POS_TWOTHIRD_RIGHT_AMOUNT) as u32;
 
         let square_width = twothirds_left;
         let square_height = (height as f32 * POS_HEIGHT_AMOUNT) as u32;
