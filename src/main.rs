@@ -14,6 +14,7 @@ fn main() {
     let args = Args::parse();
     let input = &args.input;
     let output = &args.output;
+    let twothirds_adjust = args.twothirds_adjust.unwrap_or_default();
 
     // Check input file/directory exists
     if !Path::new(input).exists() {
@@ -22,7 +23,7 @@ fn main() {
 
     // Convert single file, if input is file
     if Path::new(input).is_file() {
-        convert_and_save(input, output, &icon, &args.watermark, args.twothirds_adjust);
+        convert_and_save(input, output, &icon, &args.watermark, twothirds_adjust);
         return;
     }
 
@@ -52,7 +53,7 @@ fn main() {
             &format!("{output}/{filename}"),
             &icon,
             &args.watermark,
-            args.twothirds_adjust,
+            twothirds_adjust,
         );
     }
 }
