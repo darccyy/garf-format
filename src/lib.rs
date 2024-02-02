@@ -124,22 +124,25 @@ fn make_square(image: DynamicImage, icon: &DynamicImage, twothirds_adjust: f32) 
 
         imageops::overlay(&mut square, &image.to_rgba8(), 0, 0);
 
+        let mut third_panel = image;
+        let third_panel = third_panel.crop(twothirds_right, 0, u32::MAX, u32::MAX);
+
         imageops::overlay(
             &mut square,
-            &image.to_rgba8(),
-            -(twothirds_right as i64),
+            &third_panel.to_rgba8(),
+            (twothirds_right as i64) / 2 - square_width as i64 / 4,
             (square_height - height) as i64,
         );
 
-        let size = square_width.max(square_height) / 2;
-        let icon = icon.resize(size, size, RESIZE_FILTER);
-
-        imageops::overlay(
-            &mut square,
-            &icon.to_rgba8(),
-            (twothirds_right as f32 * POS_ICON_X) as i64,
-            (square_height as f32 * POS_ICON_Y) as i64,
-        );
+        // let size = square_width.max(square_height) / 2;
+        // let icon = icon.resize(size, size, RESIZE_FILTER);
+        //
+        // imageops::overlay(
+        //     &mut square,
+        //     &icon.to_rgba8(),
+        //     (twothirds_right as f32 * POS_ICON_X) as i64,
+        //     (square_height as f32 * POS_ICON_Y) as i64,
+        // );
 
         square
     };
