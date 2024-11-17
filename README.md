@@ -1,6 +1,6 @@
 # Garfield Comic Format
 
-Convert a Garfield comic to square format to translate and distribute.
+Library to convert Garfield comics to a certain format.
 Only intended for personal use ;)
 
 See also:
